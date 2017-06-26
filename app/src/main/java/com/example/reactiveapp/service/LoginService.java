@@ -3,7 +3,6 @@ package com.example.reactiveapp.service;
 import com.example.reactiveapp.model.LoginRequestModel;
 import com.example.reactiveapp.model.ResponseModel;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -15,5 +14,5 @@ import retrofit2.http.POST;
 public interface LoginService {
 
     @POST("login")
-    Observable<ResponseModel> login(@Body LoginRequestModel loginRequestModel);
+    Single<ResponseModel> login(@Body LoginRequestModel loginRequestModel);
 }

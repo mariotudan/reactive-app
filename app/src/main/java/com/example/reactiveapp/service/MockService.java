@@ -22,17 +22,21 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class MockService implements LoginService {
+
+    public static int LOADED_ITEMS = 0;
+
     public static Flowable<String> getStringItems() {
 
         final List<String> list = new ArrayList<>();
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 30; i++) {
             list.add(Integer.toString(i));
         }
 
         return Flowable.fromIterable(list);
     }
 
-    public Observable<ResponseModel> login(final LoginRequestModel loginModel) {
+    @Override
+    public Single<ResponseModel> login(final LoginRequestModel loginModel) {
         final String[] users = new String[]{"mario:1234", "user:1234"};
         return Observable.timer(500, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.io())
@@ -61,7 +65,6 @@ public class MockService implements LoginService {
                     public SingleSource<? extends ResponseModel> apply(@NonNull Throwable throwable) throws Exception {
                         return Single.just(new ResponseModel(false, "Login unsuccessful, invalid credentials"));
                     }
-                })
-                .toObservable();
+                });
     }
 }

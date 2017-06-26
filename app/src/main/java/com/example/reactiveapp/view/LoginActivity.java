@@ -24,8 +24,8 @@ import com.example.reactiveapp.model.LoginRequestModel;
 import com.example.reactiveapp.model.ResponseModel;
 import com.example.reactiveapp.service.LoginService;
 import com.example.reactiveapp.service.LoginServiceImpl;
-import com.example.reactiveapp.service.MockService;
 import com.example.reactiveapp.util.ViewUtils;
+import com.example.reactiveapp.view.home.HomeActivity;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -33,8 +33,9 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
@@ -59,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_login)
     Toolbar mToolbar;
 
+    CompositeDisposable viewDisposables;
+    CompositeDisposable setupUIDisposables;
     LoginService loginService;
 
     @Override
@@ -66,23 +69,41 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        ViewUtils.setupUI(mLoginView, this);
         loginService = new LoginServiceImpl();
 
         mToolbar.setTitle("Login");
         setSupportActionBar(mToolbar);
 
+        /*
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+
             }
-        });
-        RxView.clicks(mSignInButton)
+        });*/
+
+        // TEMP
+        mUsernameView.setText("mario");
+        mPasswordView.setText("1234");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setupUIDisposables = ViewUtils.setupUI(mLoginView, this);
+        viewDisposables = new CompositeDisposable();
+
+        viewDisposables.add(RxTextView.editorActions(mPasswordView)
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(@NonNull Integer id) throws Exception {
+                        if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                            attemptLogin();
+                        }
+                    }
+                }));
+
+        viewDisposables.add(RxView.clicks(mSignInButton)
                 .map(new Function<Object, String>() {
                     @Override
                     public String apply(@io.reactivex.annotations.NonNull Object o) throws Exception {
@@ -97,9 +118,9 @@ public class LoginActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(), "Button: " + s, Toast.LENGTH_LONG).show();
                         attemptLogin();
                     }
-                });
+                }));
 
-        RxTextView.textChanges(mUsernameView)
+        viewDisposables.add(RxTextView.textChanges(mUsernameView)
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<CharSequence>() {
@@ -108,7 +129,14 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d("LOGIN_TEXT_CHANGES", charSequence.toString());
                         //Toast.makeText(getApplicationContext(), "Text changes: " + charSequence.toString(), Toast.LENGTH_SHORT).show();
                     }
-                });
+                }));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        viewDisposables.dispose();
+        setupUIDisposables.dispose();
     }
 
     /**
@@ -117,6 +145,7 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        ViewUtils.hideSoftKeyboard(this);
 
         // Reset errors.
         mUsernameView.setError(null);
@@ -176,13 +205,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isUsernameValid(String username) {
-        //TODO: Replace this with your own logic
-        return true; // username.length() > 3
+        return username.length() > 3;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return true; //  password.length() > 3;
+        return password.length() > 3;
     }
 
     /**

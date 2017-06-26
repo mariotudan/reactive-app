@@ -21,9 +21,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.HomeActivity"
+            android:name=".view.home.HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
