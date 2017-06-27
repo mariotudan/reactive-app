@@ -1,4 +1,4 @@
-package com.example.reactiveapp.view;
+package com.example.reactiveapp.view.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -73,14 +73,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mToolbar.setTitle("Login");
         setSupportActionBar(mToolbar);
-
-        /*
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-
-            }
-        });*/
 
         // TEMP
         mUsernameView.setText("mario");

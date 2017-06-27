@@ -1,6 +1,8 @@
 package com.example.reactiveapp.service;
 
 import com.example.reactiveapp.model.LoginRequestModel;
+import com.example.reactiveapp.model.NewsModel;
+import com.example.reactiveapp.model.RecipeModel;
 import com.example.reactiveapp.model.ResponseModel;
 
 import java.util.ArrayList;
@@ -23,13 +25,24 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MockService implements LoginService {
 
-    public static int LOADED_ITEMS = 0;
+    public static int LOADED_NEWS_ITEMS = 0;
+    public static int LOADED_RECIPE_ITEMS = 0;
 
-    public static Flowable<String> getStringItems() {
+    public static Flowable<NewsModel> getNewsItems() {
 
-        final List<String> list = new ArrayList<>();
+        final List<NewsModel> list = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
-            list.add(Integer.toString(i));
+            list.add(new NewsModel(Integer.toString(i), "Title", "Content"));
+        }
+
+        return Flowable.fromIterable(list);
+    }
+
+    public static Flowable<RecipeModel> getRecipeItems() {
+
+        final List<RecipeModel> list = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            list.add(new RecipeModel("Recipe: " + Integer.toString(i), "Recipe description for this awesome food shown in picture", "no_picture_url"));
         }
 
         return Flowable.fromIterable(list);

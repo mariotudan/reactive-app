@@ -1,7 +1,7 @@
-package com.example.reactiveapp.view.home;
+package com.example.reactiveapp.view.home.recipe;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,9 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.reactiveapp.R;
+import com.example.reactiveapp.model.NewsModel;
+import com.example.reactiveapp.model.RecipeModel;
 import com.example.reactiveapp.service.MockService;
-import com.example.reactiveapp.util.ViewUtils;
-import com.jakewharton.rxbinding2.view.RxView;
+import com.example.reactiveapp.service.NewsService;
+import com.example.reactiveapp.service.RecipeService;
+import com.example.reactiveapp.view.common.EndlessRecyclerOnScrollListener;
+import com.example.reactiveapp.view.home.news.NewsDetailActivity;
+import com.example.reactiveapp.view.home.news.NewsListAdapter;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -26,56 +31,53 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 
 /**
  * Created by mario on 26.6.2017..
  */
 
-public class HomeFragment extends Fragment {
+public class RecipesFragment extends Fragment {
 
-    @BindView(R.id.fragment_home)
-    View mHomeView;
+    @BindView(R.id.fragment_recipes)
+    View mRecipesView;
 
-    @BindView(R.id.home_recycler)
+    @BindView(R.id.recipes_recycler)
     RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private RecipeListAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
-    List<String> items = new ArrayList<>();
-    Subscription itemsSubscription;
+    List<RecipeModel> recipeItems = new ArrayList<>();
+    Subscription recipeItemsSubscription;
 
     CompositeDisposable viewDisposables;
-    CompositeDisposable setupUIDisposables;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
         ButterKnife.bind(this, rootView);
 
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new HomeListAdapter(items);
-        MockService.getStringItems()
+        mAdapter = new RecipeListAdapter(recipeItems, this);
+        MockService.getRecipeItems()
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
+                .subscribe(new Subscriber<RecipeModel>() {
                     @Override
                     public void onSubscribe(Subscription s) {
-                        itemsSubscription = s;
-                        s.request(Math.max(MockService.LOADED_ITEMS, 4));
+                        recipeItemsSubscription = s;
+                        s.request(Math.max(MockService.LOADED_RECIPE_ITEMS, 4));
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        items.add(s);
-                        MockService.LOADED_ITEMS = items.size();
+                    public void onNext(RecipeModel recipeModel) {
+                        recipeItems.add(recipeModel);
+                        MockService.LOADED_RECIPE_ITEMS = recipeItems.size();
                         mAdapter.notifyDataSetChanged();
                     }
 
@@ -96,7 +98,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        //setupUIDisposables = ViewUtils.setupUI(mHomeView, getActivity());
         viewDisposables = new CompositeDisposable();
 
         viewDisposables.add(Observable.create(new ObservableOnSubscribe<Object>() {
@@ -125,14 +126,27 @@ public class HomeFragment extends Fragment {
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(@NonNull Object o) throws Exception {
-                        itemsSubscription.request(4);
+                        recipeItemsSubscription.request(2);
                     }
                 }));
+
+        viewDisposables.add(mAdapter.getPositionClicks().subscribe(new Consumer<RecipeModel>() {
+            @Override
+            public void accept(@NonNull RecipeModel recipeModel) throws Exception {
+                goToRecipeDetails(recipeModel);
+            }
+        }));
     }
 
     @Override
     public void onStop() {
         super.onStop();
         viewDisposables.dispose();
+    }
+
+    private void goToRecipeDetails(RecipeModel recipeModel) {
+        RecipeService.getInstance().setActiveRecipe(recipeModel);
+        Intent intent = new Intent(getActivity(), RecipeDetailActivity.class);
+        startActivity(intent);
     }
 }

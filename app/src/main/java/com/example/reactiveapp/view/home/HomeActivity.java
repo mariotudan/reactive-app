@@ -11,11 +11,11 @@ import android.transition.Transition;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.TextView;
 
 import com.example.reactiveapp.R;
 import com.example.reactiveapp.service.MockService;
-import com.example.reactiveapp.util.ViewUtils;
+import com.example.reactiveapp.view.home.news.NewsFragment;
+import com.example.reactiveapp.view.home.recipe.RecipesFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,11 +57,11 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_recipes:
                     //mTextMessage.setText(R.string.title_home);
                     changeFragment(0);
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_news:
                     //mTextMessage.setText(R.string.title_dashboard);
                     changeFragment(1);
                     return true;
@@ -83,13 +83,25 @@ public class HomeActivity extends AppCompatActivity {
         if (fragments[position] != null && fragments[position].isAdded()) {
             fragment = fragments[position];
         } else if (position == 0) {
-            fragment = new HomeFragment();
+            fragment = new RecipesFragment();
         } else if (position == 1) {
-            fragment = new TempFragment();
+            fragment = new NewsFragment();
         } else {
             fragment = new TempFragment();
         }
         fragments[position] = fragment;
+
+        switch (position){
+            case 0:
+                mToolbar.setTitle("Recipes");
+                break;
+            case 1:
+                mToolbar.setTitle("News");
+                break;
+            case 2:
+                mToolbar.setTitle("Notifications");
+                break;
+        }
 
         getSupportFragmentManager().beginTransaction().replace(
                 R.id.content, fragment)
@@ -98,7 +110,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        MockService.LOADED_ITEMS = 0;
+        MockService.LOADED_NEWS_ITEMS = 0;
+        MockService.LOADED_RECIPE_ITEMS = 0;
         super.onBackPressed();
     }
 }
