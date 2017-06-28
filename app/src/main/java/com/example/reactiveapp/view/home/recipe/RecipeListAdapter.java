@@ -79,12 +79,16 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final RecipeModel recipeModel = mDataset.get(position);
-        holder.recipeTitle.setText(recipeModel.getName());
+        String name = recipeModel.getName();
+        if(name.length() > 35){
+            name = name.substring(0, 32) + "...";
+        }
+        holder.recipeTitle.setText(name);
         holder.recipeDescription.setText(recipeModel.getDescription());
 
         GlideApp.with(fragment)
-                .load("http://lorempixel.com/400/300/food/")
-                .dontTransform()
+                .load(recipeModel.getImageUrl())
+                .centerCrop()
                 .into(holder.recipeImage);
 
         Consumer<Object> clickConsumer = new Consumer<Object>() {

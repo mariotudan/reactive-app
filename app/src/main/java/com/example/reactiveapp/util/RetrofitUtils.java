@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitUtils {
     public static final String BASE_URL = "http://138.68.69.186:9000/api/";
+    //public static final String BASE_URL = "http://1.2.3.5:9000/api/";
 
     public static <T> T createRetrofitService(final Class<T> clazz) {
         final Retrofit retrofit = new Retrofit.Builder()

@@ -14,6 +14,8 @@ import android.view.Window;
 
 import com.example.reactiveapp.R;
 import com.example.reactiveapp.service.MockService;
+import com.example.reactiveapp.service.NewsService;
+import com.example.reactiveapp.service.RecipeService;
 import com.example.reactiveapp.view.home.news.NewsFragment;
 import com.example.reactiveapp.view.home.recipe.RecipesFragment;
 
@@ -110,8 +112,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        MockService.LOADED_NEWS_ITEMS = 0;
-        MockService.LOADED_RECIPE_ITEMS = 0;
+        NewsService.LOADED_NEWS_ITEMS = 0;
+        RecipeService.LOADED_RECIPE_ITEMS = 0;
         super.onBackPressed();
     }
 }

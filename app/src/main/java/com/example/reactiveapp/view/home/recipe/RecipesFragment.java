@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,8 @@ public class RecipesFragment extends Fragment {
 
     CompositeDisposable viewDisposables;
 
+    private int requestsMade = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,19 +68,35 @@ public class RecipesFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new RecipeListAdapter(recipeItems, this);
-        MockService.getRecipeItems()
+        RecipeService.getInstance().getRecipes()
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<RecipeModel>() {
                     @Override
                     public void onSubscribe(Subscription s) {
                         recipeItemsSubscription = s;
-                        s.request(Math.max(MockService.LOADED_RECIPE_ITEMS, 4));
+                        final int recipesCount = recipeItems.size();
+                        s.request(Math.max(RecipeService.LOADED_RECIPE_ITEMS, 2));
+                        requestsMade += 2;
+                        Log.d("REQUESTS_MADE", "requestsMade: " + requestsMade);
+                        Observable.timer(4, TimeUnit.SECONDS)
+                                .subscribe(new Consumer<Long>() {
+                                    @Override
+                                    public void accept(@NonNull Long aLong) throws Exception {
+                                        if (recipeItems.size() == recipesCount) {
+                                            Log.d("RecipesFragment", "No more recipes loaded, trying again");
+                                            recipeItemsSubscription.request(2);
+                                            requestsMade += 2;
+                                            Log.d("REQUESTS_MADE", "requestsMade: " + requestsMade);
+                                        }
+                                    }
+                                });
                     }
 
                     @Override
                     public void onNext(RecipeModel recipeModel) {
                         recipeItems.add(recipeModel);
-                        MockService.LOADED_RECIPE_ITEMS = recipeItems.size();
+                        RecipeService.LOADED_RECIPE_ITEMS = recipeItems.size();
                         mAdapter.notifyDataSetChanged();
                     }
 
@@ -105,8 +124,20 @@ public class RecipesFragment extends Fragment {
             public void subscribe(@NonNull final ObservableEmitter<Object> e) throws Exception {
                 final EndlessRecyclerOnScrollListener listener = new EndlessRecyclerOnScrollListener(mLayoutManager) {
                     @Override
-                    public void onLoadMore(int current_page) {
+                    public void onLoadMore(final int current_page) {
+                        final int recipesCount = recipeItems.size();
                         e.onNext(current_page);
+                        Log.d("RecipesFragment", "Loading more recipes");
+                        Observable.timer(4, TimeUnit.SECONDS)
+                                .subscribe(new Consumer<Long>() {
+                                    @Override
+                                    public void accept(@NonNull Long aLong) throws Exception {
+                                        if (recipeItems.size() == recipesCount) {
+                                            Log.d("RecipesFragment", "No more recipes loaded, trying again");
+                                            e.onNext(current_page);
+                                        }
+                                    }
+                                });
                     }
                 };
                 mRecyclerView.addOnScrollListener(listener);
@@ -127,6 +158,8 @@ public class RecipesFragment extends Fragment {
                     @Override
                     public void accept(@NonNull Object o) throws Exception {
                         recipeItemsSubscription.request(2);
+                        requestsMade += 2;
+                        Log.d("REQUESTS_MADE", "requestsMade: " + requestsMade);
                     }
                 }));
 

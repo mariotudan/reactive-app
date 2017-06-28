@@ -67,13 +67,13 @@ public class NewsFragment extends Fragment {
                     @Override
                     public void onSubscribe(Subscription s) {
                         newsItemsSubscription = s;
-                        s.request(Math.max(MockService.LOADED_NEWS_ITEMS, 4));
+                        s.request(Math.max(NewsService.LOADED_NEWS_ITEMS, 4));
                     }
 
                     @Override
                     public void onNext(NewsModel newsModel) {
                         newsItems.add(newsModel);
-                        MockService.LOADED_NEWS_ITEMS = newsItems.size();
+                        NewsService.LOADED_NEWS_ITEMS = newsItems.size();
                         mAdapter.notifyDataSetChanged();
                     }
 

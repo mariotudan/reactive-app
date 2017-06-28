@@ -27,14 +27,15 @@
             <ImageView
                 android:id="@+id/recipe_image"
                 android:layout_width="0dp"
-                android:layout_height="160dp"
+                android:layout_height="200dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="@string/recipe_image_content_description"
                 android:scaleType="fitXY"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@color/colorAccent" />
 
             <TextView
                 android:id="@+id/recipe_title"
@@ -71,23 +72,20 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recipe_description">
+                app:layout_constraintTop_toBottomOf="@+id/recipe_description"
+                app:layout_constraintVertical_bias="1.0"
+                android:layout_marginTop="0dp">
 
                 <Button
                     android:id="@+id/share_button"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="70dp"
-                    android:layout_height="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="share"
                     card_view:layout_constraintLeft_toLeftOf="parent"
                     tools:layout_editor_absoluteY="428dp" />
@@ -95,9 +93,8 @@
                 <Button
                     android:id="@+id/open_button"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="70dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="open"
                     app:layout_constraintLeft_toLeftOf="parent"
                     tools:layout_editor_absoluteY="428dp" />

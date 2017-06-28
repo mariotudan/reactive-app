@@ -19,6 +19,8 @@ public class NewsService {
         return instance;
     }
 
+    public static int LOADED_NEWS_ITEMS = 0;
+
     private NewsModel activeNews;
 
     public NewsModel getActiveNews() {

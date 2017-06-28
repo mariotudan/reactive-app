@@ -6,6 +6,7 @@ import com.example.reactiveapp.model.RecipeModel;
 import com.example.reactiveapp.model.ResponseModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -25,9 +26,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MockService implements LoginService {
 
-    public static int LOADED_NEWS_ITEMS = 0;
-    public static int LOADED_RECIPE_ITEMS = 0;
-
     public static Flowable<NewsModel> getNewsItems() {
 
         final List<NewsModel> list = new ArrayList<>();
@@ -41,8 +39,14 @@ public class MockService implements LoginService {
     public static Flowable<RecipeModel> getRecipeItems() {
 
         final List<RecipeModel> list = new ArrayList<>();
+        final List<String> ingredients = new ArrayList<>();
+        ingredients.add("Ingredient 1");
+        ingredients.add("Ingredient 2");
+        final List<String> steps = new ArrayList<>();
+        steps.add("Step 1");
+        steps.add("Step 2");
         for (int i = 1; i <= 30; i++) {
-            list.add(new RecipeModel("Recipe: " + Integer.toString(i), "Recipe description for this awesome food shown in picture", "no_picture_url"));
+            list.add(new RecipeModel("Recipe: " + Integer.toString(i), "Recipe description for this awesome food shown in picture", ingredients, steps, "no_picture_url", "no source"));
         }
 
         return Flowable.fromIterable(list);
