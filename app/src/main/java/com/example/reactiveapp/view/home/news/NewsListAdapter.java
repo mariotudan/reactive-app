@@ -30,9 +30,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        @BindView(R.id.name) TextView name;
-        @BindView(R.id.title) TextView title;
-        @BindView(R.id.content) TextView content;
+
+        @BindView(R.id.news_name)
+        TextView newsName;
+        @BindView(R.id.news_content)
+        TextView newsContent;
+        @BindView(R.id.news_author_date)
+        TextView newsAuthorDate;
+
         public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
@@ -62,9 +67,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final NewsModel newsModel = mDataset.get(position);
-        holder.name.setText(newsModel.getUser());
-        holder.title.setText(newsModel.getTitle());
-        holder.content.setText(newsModel.getContent());
+
+        String content = newsModel.getContent().substring(0, 150) + "...";
+        String authorDate = "by " + newsModel.getAuthor() + ", " + newsModel.getDate();
+
+        holder.newsName.setText(newsModel.getName());
+        holder.newsContent.setText(content);
+        holder.newsAuthorDate.setText(authorDate);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +89,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         return mDataset.size();
     }
 
-    public Observable<NewsModel> getPositionClicks(){
+    public Observable<NewsModel> getPositionClicks() {
         return onClickSubject.hide();
     }
 }

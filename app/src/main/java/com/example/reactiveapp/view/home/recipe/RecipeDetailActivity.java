@@ -31,6 +31,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
     ImageView recipeImage;
     @BindView(R.id.recipe_name)
     TextView recipeName;
+    @BindView(R.id.recipe_source)
+    TextView recipeSource;
     @BindView(R.id.recipe_description)
     TextView recipeDescription;
     @BindView(R.id.recipe_ingredients)
@@ -57,6 +59,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
 
         recipeName.setText(recipeModel.getName());
+        recipeSource.setText("from " + recipeModel.getSource());
         recipeDescription.setText(recipeModel.getDescription());
 
         GlideApp.with(this)

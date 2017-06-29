@@ -61,7 +61,7 @@ public class NewsFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new NewsListAdapter(newsItems);
-        MockService.getNewsItems()
+        NewsService.getInstance().getNewsItems()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<NewsModel>() {
                     @Override

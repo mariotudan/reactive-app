@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.Window;
 
 import com.example.reactiveapp.R;
-import com.example.reactiveapp.service.MockService;
 import com.example.reactiveapp.service.NewsService;
 import com.example.reactiveapp.service.RecipeService;
 import com.example.reactiveapp.view.home.news.NewsFragment;
@@ -89,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
         } else if (position == 1) {
             fragment = new NewsFragment();
         } else {
-            fragment = new TempFragment();
+            fragment = new AboutFragment();
         }
         fragments[position] = fragment;
 
@@ -101,7 +100,7 @@ public class HomeActivity extends AppCompatActivity {
                 mToolbar.setTitle("News");
                 break;
             case 2:
-                mToolbar.setTitle("Notifications");
+                mToolbar.setTitle("About");
                 break;
         }
 

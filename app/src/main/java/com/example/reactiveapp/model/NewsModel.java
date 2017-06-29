@@ -5,26 +5,37 @@ package com.example.reactiveapp.model;
  */
 
 public class NewsModel {
-    private String user;
-    private String title;
+    private String author;
+    private String name;
     private String content;
+    private String date;
+    private String imageUrl;
 
-    public NewsModel(String user, String title, String content) {
-        this.user = user;
-        this.title = title;
+    public NewsModel(String author, String name, String content, String date, String imageUrl) {
+        this.author = author;
+        this.name = name;
         this.content = content;
+        this.date = date;
+        this.imageUrl = imageUrl;
     }
 
-    public String getUser() {
-        return user;
+    public String getAuthor() {
+        return author;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     public String getContent() {
         return content;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 }

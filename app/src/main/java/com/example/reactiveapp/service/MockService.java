@@ -30,7 +30,7 @@ public class MockService implements LoginService {
 
         final List<NewsModel> list = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
-            list.add(new NewsModel(Integer.toString(i), "Title", "Content"));
+            list.add(new NewsModel(Integer.toString(i), "Title", "Content", "", ""));
         }
 
         return Flowable.fromIterable(list);
