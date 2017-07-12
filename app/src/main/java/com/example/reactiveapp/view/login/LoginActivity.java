@@ -3,6 +3,7 @@ package com.example.reactiveapp.view.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -48,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.activity_login)
     View mLoginView;
     @BindView(R.id.username)
-    AutoCompleteTextView mUsernameView;
+    EditText mUsernameView;
     @BindView(R.id.password)
     EditText mPasswordView;
     @BindView(R.id.login_progress)
@@ -57,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     View mLoginFormView;
     @BindView(R.id.sign_in_button)
     Button mSignInButton;
-    @BindView(R.id.toolbar_login)
-    Toolbar mToolbar;
+    //@BindView(R.id.toolbar_login)
+    //Toolbar mToolbar;
 
     CompositeDisposable viewDisposables;
     CompositeDisposable setupUIDisposables;
@@ -71,8 +74,11 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         loginService = new LoginServiceImpl();
 
-        mToolbar.setTitle("Login");
-        setSupportActionBar(mToolbar);
+        //mToolbar.setTitle("Login");
+        //setSupportActionBar(mToolbar);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getColor(R.color.colorPrimary));
 
         // TEMP
         mUsernameView.setText("mario");
@@ -89,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(@NonNull Integer id) throws Exception {
-                        if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        if (id == R.id.login || id == EditorInfo.IME_ACTION_DONE) {
                             attemptLogin();
                         }
                     }
