@@ -30,6 +30,7 @@
         <item name="colorControlActivated">@android:color/white</item>
         <item name="android:textColorHighlight">@color/colorPrimaryLight</item>
         <item name="android:textColorLink">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>

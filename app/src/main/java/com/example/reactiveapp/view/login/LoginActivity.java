@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(R.color.colorPrimary));
+        window.setNavigationBarColor(getColor(R.color.colorPrimary));
 
         // TEMP
         mUsernameView.setText("mario");
