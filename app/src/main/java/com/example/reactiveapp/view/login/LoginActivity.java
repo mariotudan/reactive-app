@@ -49,17 +49,17 @@ public class LoginActivity extends AppCompatActivity {
 
     // UI references.
     @BindView(R.id.activity_login)
-    View mLoginView;
+    View loginView;
     @BindView(R.id.username)
-    EditText mUsernameView;
+    EditText usernameView;
     @BindView(R.id.password)
-    EditText mPasswordView;
+    EditText passwordView;
     @BindView(R.id.login_progress)
-    View mProgressView;
+    View progressView;
     @BindView(R.id.login_form)
-    View mLoginFormView;
+    View loginFormView;
     @BindView(R.id.sign_in_button)
-    Button mSignInButton;
+    Button signInButton;
     //@BindView(R.id.toolbar_login)
     //Toolbar mToolbar;
 
@@ -82,17 +82,17 @@ public class LoginActivity extends AppCompatActivity {
         window.setNavigationBarColor(getColor(R.color.colorPrimary));
 
         // TEMP
-        mUsernameView.setText("mario");
-        mPasswordView.setText("1234");
+        usernameView.setText("mario");
+        passwordView.setText("1234");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setupUIDisposables = ViewUtils.setupUI(mLoginView, this);
+        setupUIDisposables = ViewUtils.setupUI(loginView, this);
         viewDisposables = new CompositeDisposable();
 
-        viewDisposables.add(RxTextView.editorActions(mPasswordView)
+        viewDisposables.add(RxTextView.editorActions(passwordView)
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(@NonNull Integer id) throws Exception {
@@ -102,11 +102,11 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }));
 
-        viewDisposables.add(RxView.clicks(mSignInButton)
+        viewDisposables.add(RxView.clicks(signInButton)
                 .map(new Function<Object, String>() {
                     @Override
                     public String apply(@io.reactivex.annotations.NonNull Object o) throws Exception {
-                        return mUsernameView.getText().toString();
+                        return usernameView.getText().toString();
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }));
 
-        viewDisposables.add(RxTextView.textChanges(mUsernameView)
+        viewDisposables.add(RxTextView.textChanges(usernameView)
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<CharSequence>() {
@@ -138,6 +138,12 @@ public class LoginActivity extends AppCompatActivity {
         setupUIDisposables.dispose();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid username, missing fields, etc.), the
@@ -147,35 +153,35 @@ public class LoginActivity extends AppCompatActivity {
         ViewUtils.hideSoftKeyboard(this);
 
         // Reset errors.
-        mUsernameView.setError(null);
-        mPasswordView.setError(null);
+        usernameView.setError(null);
+        passwordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = mUsernameView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        String username = usernameView.getText().toString();
+        String password = passwordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
+        // Check for a valid username address.
+        if (TextUtils.isEmpty(username)) {
+            usernameView.setError(getString(R.string.error_field_required));
+            focusView = usernameView;
             cancel = true;
-        } else if (!isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+        } else if (!isUsernameValid(username)) {
+            usernameView.setError(getString(R.string.error_invalid_username));
+            focusView = usernameView;
             cancel = true;
         }
 
-        // Check for a valid username address.
-        if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
+        // Check for a valid password, if the user entered one.
+        if (TextUtils.isEmpty(password)) {
+            passwordView.setError(getString(R.string.error_field_required));
+            focusView = passwordView;
             cancel = true;
-        } else if (!isUsernameValid(username)) {
-            mUsernameView.setError(getString(R.string.error_invalid_username));
-            focusView = mUsernameView;
+        } else if (!isPasswordValid(password)) {
+            passwordView.setError(getString(R.string.error_invalid_password));
+            focusView = passwordView;
             cancel = true;
         }
 
@@ -217,21 +223,21 @@ public class LoginActivity extends AppCompatActivity {
     private void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+        loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        loginFormView.animate().setDuration(shortAnimTime).alpha(
                 show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             }
         });
 
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(
+        progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        progressView.animate().setDuration(shortAnimTime).alpha(
                 show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
     }

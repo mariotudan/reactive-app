@@ -32,7 +32,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.ViewHolder> {
-    private List<RecipeModel> mDataset;
+    private List<RecipeModel> recipes;
     private Fragment fragment;
 
     private final PublishSubject<RecipeModel> onClickSubject = PublishSubject.create();
@@ -58,8 +58,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RecipeListAdapter(List<RecipeModel> myDataset, Fragment fragment) {
-        mDataset = myDataset;
+    public RecipeListAdapter(List<RecipeModel> recipes, Fragment fragment) {
+        this.recipes = recipes;
         this.fragment = fragment;
     }
 
@@ -78,7 +78,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final RecipeModel recipeModel = mDataset.get(position);
+        final RecipeModel recipeModel = recipes.get(position);
         String name = recipeModel.getName();
         if(name.length() > 35){
             name = name.substring(0, 32) + "...";
@@ -91,12 +91,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
                 .centerCrop()
                 .into(holder.recipeImage);
 
-        Consumer<Object> clickConsumer = new Consumer<Object>() {
-            @Override
-            public void accept(@NonNull Object o) throws Exception {
-                onClickSubject.onNext(recipeModel);
-            }
-        };
+        Consumer<Object> clickConsumer = o -> onClickSubject.onNext(recipeModel);
         RxView.clicks(holder.recipeImage).subscribe(clickConsumer);
         RxView.clicks(holder.openRecipeButton).subscribe(clickConsumer);
     }
@@ -104,7 +99,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return recipes.size();
     }
 
     public Observable<RecipeModel> getPositionClicks() {
