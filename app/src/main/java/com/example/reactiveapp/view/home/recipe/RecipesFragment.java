@@ -163,12 +163,8 @@ public class RecipesFragment extends Fragment {
                     }
                 }));
 
-        viewDisposables.add(mAdapter.getPositionClicks().subscribe(new Consumer<RecipeModel>() {
-            @Override
-            public void accept(@NonNull RecipeModel recipeModel) throws Exception {
-                goToRecipeDetails(recipeModel);
-            }
-        }));
+        viewDisposables.add(mAdapter.getPositionClicks().subscribe(this::goToRecipeDetails));
+        viewDisposables.add(mAdapter.getShareClicks().subscribe(this::shareRecipe));
     }
 
     @Override
@@ -181,5 +177,13 @@ public class RecipesFragment extends Fragment {
         RecipeService.getInstance().setActiveRecipe(recipeModel);
         Intent intent = new Intent(getActivity(), RecipeDetailActivity.class);
         startActivity(intent);
+    }
+
+    private void shareRecipe(RecipeModel recipeModel) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, recipeModel.getName());
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 }

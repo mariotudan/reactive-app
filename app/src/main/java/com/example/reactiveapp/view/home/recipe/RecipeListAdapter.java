@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.reactiveapp.R;
+import com.example.reactiveapp.model.NewsModel;
 import com.example.reactiveapp.model.RecipeModel;
 import com.example.reactiveapp.util.GlideApp;
 import com.jakewharton.rxbinding2.view.RxView;
@@ -36,6 +37,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     private Fragment fragment;
 
     private final PublishSubject<RecipeModel> onClickSubject = PublishSubject.create();
+    private final PublishSubject<RecipeModel> onShareSubject = PublishSubject.create();
 
     // Provide a reference to the views for each data item
     // Complex data newsItems may need more than one view per item, and
@@ -50,6 +52,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         TextView recipeDescription;
         @BindView(R.id.open_button)
         Button openRecipeButton;
+        @BindView(R.id.share_button)
+        Button shareRecipeButton;
 
         public ViewHolder(View v) {
             super(v);
@@ -94,6 +98,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         Consumer<Object> clickConsumer = o -> onClickSubject.onNext(recipeModel);
         RxView.clicks(holder.recipeImage).subscribe(clickConsumer);
         RxView.clicks(holder.openRecipeButton).subscribe(clickConsumer);
+
+        RxView.clicks(holder.shareRecipeButton).subscribe(o -> onShareSubject.onNext(recipeModel));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -104,5 +110,9 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
 
     public Observable<RecipeModel> getPositionClicks() {
         return onClickSubject.hide();
+    }
+
+    public Observable<RecipeModel> getShareClicks() {
+        return onShareSubject.hide();
     }
 }
